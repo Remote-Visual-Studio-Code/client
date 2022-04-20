@@ -8,7 +8,7 @@ import files from './file/files';
 const app = express();
 let server: Server;
 
-export default function run(settings: { port: number }) {
+export default function run(settings: { port: number }): boolean {
     app.get('/', (req, res) => {
         res.send(
             'Remote VSCode server.\nYou dont need to do anything here, it is self-sustainable.\nYou can end the session and server by running the "RVSC - End Session" command in Visual Studio Code.',
@@ -23,10 +23,13 @@ export default function run(settings: { port: number }) {
             `Remote VSCode is listening on port ${settings.port}`,
         );
     });
+
+    return true;
 }
 
-export function stop() {
+export function stop(): boolean {
     server.close();
+    return true;
 }
 
 export function getApp() {
