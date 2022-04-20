@@ -1,7 +1,5 @@
 import * as assert from 'assert';
 
-import * as vscode from 'vscode';
-
 import run, { stop } from '../../server/server';
 
 suite('Private server', () => {
