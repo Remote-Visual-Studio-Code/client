@@ -8,10 +8,13 @@ import setPermissionCommand from './commands/setPermission';
 import createSessionCommand from './commands/createSession';
 import endSessionCommand from './commands/endSession';
 import kickUserCommand from './commands/kickUser';
+import dotenv from 'dotenv';
 import axios from 'axios';
 
 let mode: vscode.ExtensionMode;
 let storage: LocalStorageService;
+
+process.env.PRODUCTION_URL = 'https://remote-vscode.herokuapp.com';
 
 function registerCommand(
     context: vscode.ExtensionContext,
@@ -61,7 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
     ) {
         process.env.URL = 'http://localhost:8000';
     } else {
-        process.env.URL = 'https://remote-vscode.herokuapp.com';
+        process.env.URL = process.env.PRODUCTION_URL;
     }
 
     storage = new LocalStorageService(context.globalState);
