@@ -8,7 +8,6 @@ import setPermissionCommand from './commands/setPermission';
 import createSessionCommand from './commands/createSession';
 import endSessionCommand from './commands/endSession';
 import kickUserCommand from './commands/kickUser';
-import dotenv from 'dotenv';
 import axios from 'axios';
 
 let mode: vscode.ExtensionMode;
