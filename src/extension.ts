@@ -41,7 +41,6 @@ function registerCommands(context: vscode.ExtensionContext) {
 }
 
 function detectWorkspaceChange() {
-    // Detect workspace change
     vscode.workspace.onDidChangeWorkspaceFolders(() => {
         endSession();
     });

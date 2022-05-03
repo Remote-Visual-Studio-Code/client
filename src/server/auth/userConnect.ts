@@ -41,7 +41,7 @@ router.get('/', async (req, res) => {
         '**/node_modules/**, **/venv/**',
     );
 
-    const files: { path: string; name: string; content: string }[] = [];
+    const files: { path: string; name: string }[] = [];
 
     filePaths.map(async (file) => {
         const workspaceName = vscode.workspace.name;
@@ -60,13 +60,9 @@ router.get('/', async (req, res) => {
 
         if (!name) throw new Error('Invalid file name');
 
-        // Read the file
-        const fileContents = await vscode.workspace.fs.readFile(file);
-
         files.push({
             path: path,
             name: name,
-            content: fileContents.toString(),
         });
     });
 
