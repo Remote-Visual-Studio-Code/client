@@ -9,18 +9,9 @@
     "categories": [
         "Other"
     ],
-    "activationEvents": [
-        "onCommand:remote-visual-studio-code.helloWorld"
-    ],
+    "activationEvents": [],
     "main": "./dist/extension.js",
-    "contributes": {
-        "commands": [
-            {
-                "command": "remote-visual-studio-code.helloWorld",
-                "title": "Hello World"
-            }
-        ]
-    },
+    "contributes": {},
     "scripts": {
         "vscode:prepublish": "yarn run package",
         "compile": "webpack",
