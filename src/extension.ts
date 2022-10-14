@@ -1,7 +1,9 @@
 import * as vscode from 'vscode';
 
+import logger from './util/logger';
+
 export function activate(context: vscode.ExtensionContext) {
-    console.log('Congratulations, your extension "remote-visual-studio-code" is now active!');
+    logger.info('Successfully started Remote Visual Studio Code extension');
 
     const disposable = vscode.commands.registerCommand('remote-visual-studio-code.helloWorld', () => {
         vscode.window.showInformationMessage('Hello World from Remote Visual Studio Code!');
