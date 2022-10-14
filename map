@@ -1,0 +1,24 @@
+server
+  recv connection
+    emit connected { message }
+  recv token.generate { sid }
+    emit token.generated { success, token, error }
+  recv session.create-session { password, expires }
+    emit session.session-created { error, sid }
+  recv session.delete-session { token }
+    emit session.session-deleted { success, error }
+  recv terminal.execute { token, password, command, args }
+    emit terminal.execute { success, error }
+    broadcast terminal.execute-cmd { auth: { sid, password }, command, args }
+    recv terminal.execute-cmd-response { auth: { sid, password }, data: { bytes } }
+      emit terminal.execute-byte-recv { success, bytes }
+    recv terminal.execute-cmd-response-end { auth: { sid, password }, data: { bytes } }
+      emit terminal.execute-end { success, bytes }
+  recv user.kick { token, password, user }
+    emit user.kicked { success, error }
+    broadcast user.kick { sid, user }
+  recv user.connect { token, password, user, location, permission }
+    emit user.connect { success, error }
+    broadcast user.request-connection { sid, name, location, permission }
+    recv user.request-connection-response  { sid, response }
+      emit user.connect { success, error }
