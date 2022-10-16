@@ -36,7 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.commands.registerCommand('remote-visual-studio-code.show', () => {
             RemoteVisualStudioCodePanel.createOrShow(context.extensionUri);
-        })
+        }),
     );
 
     logger.info('Successfully started Remote Visual Studio Code extension');
