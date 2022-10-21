@@ -5,11 +5,18 @@ import * as sioc from 'socket.io-client';
 import { RemoteVisualStudioCodePanel } from './RemoteVisualStudioCodePanel';
 
 import logger from './util/logger';
+import LocalStorageService from './util/LocalStorageService';
 
 const PROD_URL = 'https://localhost:8080'; // change later
 
+let storage: LocalStorageService;
+
 export function connect(port: number, prod: boolean): sioc.Socket {
     return sioc.connect(prod ? PROD_URL : `http://localhost:${port}`);
+}
+
+export function resetStorage() {
+    getStorage().set('sid', 'test');
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -18,6 +25,9 @@ export function activate(context: vscode.ExtensionContext) {
     const isProd = env === 'production';
 
     logger.info(`Starting Remote Visual Studio Code in ${env} enviornment`);
+
+    storage = new LocalStorageService(context.globalState);
+    resetStorage();
 
     const socket = connect(8080, isProd);
 
@@ -40,6 +50,10 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     logger.info('Successfully started Remote Visual Studio Code extension');
+}
+
+export function getStorage(): LocalStorageService {
+    return storage;
 }
 
 export function deactivate() {

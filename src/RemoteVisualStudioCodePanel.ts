@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 
 import getNonce from './nonce';
 
+import { getStorage } from './extension';
+
 export class RemoteVisualStudioCodePanel {
     public static currentPanel: RemoteVisualStudioCodePanel | undefined;
 
@@ -83,7 +85,11 @@ export class RemoteVisualStudioCodePanel {
     <meta charset="UTF-8">
     <link href="${stylesResetUri}" rel="stylesheet">
     <link href="${stylesMainUri}" rel="stylesheet">
-    <script nonce="${nonce}"></script>
+    <script nonce="${nonce}">
+        window.rvsc_config = {
+            sid: '${getStorage().get('sid')}',
+        }
+    </script>
 </head>
 <body>
     <div id="root"></div>
