@@ -10,7 +10,8 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:remote-visual-studio-code.show"
+        "onCommand:remote-visual-studio-code.show",
+        "onView:remote-visual-studio-code-sidebar"
     ],
     "main": "./dist/extension.js",
     "contributes": {
@@ -19,13 +20,33 @@
                 "command": "remote-visual-studio-code.show",
                 "title": "Show Remote VS Code"
             }
-        ]
+        ],
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "remote-visual-studio-code-sidebar-view",
+                    "title": "Remote VS Code",
+                    "icon": "media/icon.png"
+                }
+            ]
+        },
+        "views": {
+            "remote-visual-studio-code-sidebar-view": [
+                {
+                    "type": "webview",
+                    "id": "remote-visual-studio-code-sidebar",
+                    "name": "Remote VS Code",
+                    "icon": "media/icon.png",
+                    "contextualTitle": "Remote VS Code"
+                }
+            ]
+        }
     },
     "license": "MIT",
     "scripts": {
         "vscode:prepublish": "yarn run package",
         "compile": "webpack --config webpack.config.js",
-        "watch": "webpack --watch --config webpack.config.js",
+        "watch": "concurrently \"webpack --config webpack.config.js --watch\" \"webpack --config webpack.react.js --watch\"",
         "package": "webpack --mode production --devtool hidden-source-map --config webpack.config.js",
         "compile:client": "webpack --config webpack.react.js",
         "watch:client": "webpack --watch --config webpack.react.js",
