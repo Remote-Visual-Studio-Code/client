@@ -84,7 +84,7 @@ export default class CreateSessionCommand extends Command {
             getStorage().set('sid', sid);
         });
 
-        await generateToken();
+        await generateToken(true);
 
         while (getStorage().get('token') === null) await new Promise((resolve) => setTimeout(resolve, 100));
 
