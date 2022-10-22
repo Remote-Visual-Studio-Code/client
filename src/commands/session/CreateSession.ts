@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 
 import { getSocket, getStorage } from '../../extension';
-import { RemoteVisualStudioCodePanel } from '../../RemoteVisualStudioCodePanel';
 import Command from '../../Command';
 
 /**
