@@ -23,9 +23,7 @@ export default class CreateSessionCommand extends Command {
 
         if (!socket.connected) {
             return vscode.window.showErrorMessage('Could not connect to server', 'Retry').then((value) => {
-                if (value === 'Retry') {
-                    retrySocketConnection();
-                }
+                if (value === 'Retry') retrySocketConnection();
             });
         }
 
