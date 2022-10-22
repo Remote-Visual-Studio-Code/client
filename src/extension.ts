@@ -67,6 +67,14 @@ export async function activate(context: vscode.ExtensionContext) {
         );
     });
 
+    socket.on('token.generated', (data) => {
+        const { success, token, error } = JSON.parse(data);
+
+        if (!success) return vscode.window.showErrorMessage('Failed to generate token: ' + error);
+
+        getStorage().set('token', token);
+    });
+
     await registerCommand(new CreateSessionCommand());
 
     context.subscriptions.push(
