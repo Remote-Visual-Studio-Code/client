@@ -8,9 +8,7 @@ export default async function retrySocketConnection(): Promise<void> {
     while (!getSocket().connected) {
         if (timeTaken > 3000) {
             vscode.window.showErrorMessage('Could not connect to server', 'Retry').then((value) => {
-                if (value === 'Retry') {
-                    retrySocketConnection();
-                }
+                if (value === 'Retry') retrySocketConnection();
             });
 
             return;
