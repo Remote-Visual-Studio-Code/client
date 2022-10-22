@@ -11,8 +11,8 @@ import Command from '../../Command';
  * @throws {Error} If the user input is not valid
  *
  * Socket events:
- *  Emit: session.create-session (password, expiry date), token.generate (session id)
- *  Recv: session.session-created (error?, session id), token.generated (success, token, error?)
+ *  Emit: session.create-session (password, expiry date)
+ *  Recv: session.session-created (error?, session id)
  */
 export default class CreateSessionCommand extends Command {
     public async execute(...args: any[]) {
@@ -85,17 +85,13 @@ export default class CreateSessionCommand extends Command {
             const { error, sid } = JSON.parse(data);
 
             if (error) {
-                vscode.window.showErrorMessage('Failed to create session: ' + error);
+                vscode.window.showErrorMessage(`Failed to create session: ${error}`);
                 return;
             }
 
             getStorage().set('sid', sid);
 
-            RemoteVisualStudioCodePanel.currentPanel?._update();
-
-            vscode.window.showInformationMessage(`Session created with id ${sid}`);
-
-            socket.off('session.session-created');
+            console.log('Session created');
         });
     }
 
