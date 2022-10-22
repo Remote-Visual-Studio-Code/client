@@ -11,8 +11,8 @@ import Command from '../../Command';
  * @throws {Error} If the user input is not valid
  *
  * Socket events:
- *  Emit: session.create-session (password, expiry date)
- *  Recv: session.session-created (error?, session id)
+ *  Emit: session.create-session (password, expiry date), token.generate (session id)
+ *  Recv: session.session-created (error?, session id), token.generated (success, token, error?)
  */
 export default class CreateSessionCommand extends Command {
     public async execute(...args: any[]) {
