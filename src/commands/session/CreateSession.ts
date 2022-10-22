@@ -4,6 +4,16 @@ import { getSocket, getStorage } from '../../extension';
 import { RemoteVisualStudioCodePanel } from '../../RemoteVisualStudioCodePanel';
 import Command from '../../Command';
 
+/**
+ * Create a new session.
+ *
+ * @throws {Error} If the socket refuses to connect
+ * @throws {Error} If the user input is not valid
+ *
+ * Socket events:
+ *  Emit: session.create-session (password, expiry date)
+ *  Recv: session.session-created (error?, session id)
+ */
 export default class CreateSessionCommand extends Command {
     public async execute(...args: any[]) {
         let timeTaken = 0;
@@ -84,6 +94,8 @@ export default class CreateSessionCommand extends Command {
             RemoteVisualStudioCodePanel.currentPanel?._update();
 
             vscode.window.showInformationMessage(`Session created with id ${sid}`);
+
+            socket.off('session.session-created');
         });
     }
 
