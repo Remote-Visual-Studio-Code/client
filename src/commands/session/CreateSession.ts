@@ -3,6 +3,8 @@ import * as vscode from 'vscode';
 import { getSocket, getStorage } from '../../extension';
 import Command from '../../Command';
 
+import retrySocketConnection from '../../util/retrySocketConnection';
+
 /**
  * Create a new session.
  *
@@ -15,24 +17,16 @@ import Command from '../../Command';
  */
 export default class CreateSessionCommand extends Command {
     public async execute(...args: any[]) {
-        let timeTaken = 0;
-
-        while (!getSocket().connected) {
-            if (timeTaken > 3000) {
-                vscode.window.showErrorMessage('Could not connect to server');
-
-                return;
-            }
-
-            timeTaken += 100;
-
-            await new Promise((resolve) => setTimeout(resolve, 100));
-        }
+        await retrySocketConnection();
 
         const socket = getSocket();
 
         if (!socket.connected) {
-            if (!socket.connected) return vscode.window.showErrorMessage('Could not connect to server');
+            return vscode.window.showErrorMessage('Could not connect to server', 'Retry').then((value) => {
+                if (value === 'Retry') {
+                    retrySocketConnection();
+                }
+            });
         }
 
         const password = await vscode.window.showInputBox({
