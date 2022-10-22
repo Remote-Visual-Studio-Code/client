@@ -1,9 +1,10 @@
 import * as vscode from 'vscode';
 
 import { getSocket, getStorage } from '../../extension';
-import Command from '../../Command';
+import { generateToken } from '../../util/token';
 
 import retrySocketConnection from '../../util/retrySocketConnection';
+import Command from '../../Command';
 
 /**
  * Create a new session.
@@ -81,9 +82,13 @@ export default class CreateSessionCommand extends Command {
             }
 
             getStorage().set('sid', sid);
-
-            console.log('Session created');
         });
+
+        await generateToken();
+
+        while (getStorage().get('token') === null) await new Promise((resolve) => setTimeout(resolve, 100));
+
+        vscode.window.showInformationMessage('Successfully created session!');
     }
 
     public getQualifiedName() {
