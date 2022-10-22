@@ -1,3 +1,5 @@
+// process.env.DEBUG = '*'; // uncomment to enable socket.io debugging
+
 import * as sioc from 'socket.io-client';
 import * as vscode from 'vscode';
 
