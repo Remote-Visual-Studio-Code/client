@@ -11,6 +11,7 @@
     ],
     "activationEvents": [
         "onCommand:remote-visual-studio-code.show",
+        "onCommand:remote-visual-studio-code.createSession",
         "onView:remote-visual-studio-code-sidebar"
     ],
     "main": "./dist/extension.js",
@@ -19,6 +20,10 @@
             {
                 "command": "remote-visual-studio-code.show",
                 "title": "Show Remote VS Code"
+            },
+            {
+                "command": "remote-visual-studio-code.createSession",
+                "title": "Create Session"
             }
         ],
         "viewsContainers": {

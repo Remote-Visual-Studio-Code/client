@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import * as vscode from 'vscode';
 
 import getNonce from './nonce';
@@ -34,6 +35,16 @@ export class RemoteVisualStudioCodePanel {
         );
 
         RemoteVisualStudioCodePanel.currentPanel = new RemoteVisualStudioCodePanel(panel, extensionUri);
+
+        panel.webview.onDidReceiveMessage((message) => {
+            const args = JSON.parse(message.args);
+
+            switch (message.command) {
+                case 'alert':
+                    vscode.window.showErrorMessage(args.text);
+                    return;
+            }
+        });
     }
 
     public static kill() {
@@ -67,7 +78,7 @@ export class RemoteVisualStudioCodePanel {
         }
     }
 
-    private _update() {
+    public _update() {
         this._panel.webview.html = this._getHtmlForWebview(this._panel.webview);
     }
 
@@ -88,6 +99,8 @@ export class RemoteVisualStudioCodePanel {
     <script nonce="${nonce}">
         window.rvsc_config = {
             sid: '${getStorage().get('sid')}',
+            password: '${getStorage().get('password')}',
+            users: '${getStorage().get('users')}',
         }
     </script>
 </head>

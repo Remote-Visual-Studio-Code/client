@@ -6,6 +6,7 @@
         "sourceMap": true,
         "strict": true,
         "jsx": "react",
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "experimentalDecorators": true
     }
 }

@@ -1,35 +1,57 @@
+import * as sioc from 'socket.io-client';
 import * as vscode from 'vscode';
 
-import * as sioc from 'socket.io-client';
-
 import { RemoteVisualStudioCodePanel } from './RemoteVisualStudioCodePanel';
-
-import logger from './util/logger';
 import LocalStorageService from './util/LocalStorageService';
+import logger from './util/logger';
+import Command from './Command';
+
+import CreateSessionCommand from './commands/session/CreateSession';
 
 const PROD_URL = 'https://localhost:8080'; // change later
 
 let storage: LocalStorageService;
+let socket: sioc.Socket;
+
+async function registerCommand(command: Command): Promise<boolean> {
+    const qualifiedCommandName = command.getQualifiedName();
+
+    if ((await vscode.commands.getCommands()).includes(qualifiedCommandName)) {
+        logger.error(`command ${qualifiedCommandName} already exists`);
+
+        return false;
+    }
+
+    logger.info(`registering command: ${qualifiedCommandName}`);
+
+    vscode.commands.registerCommand(qualifiedCommandName, command.execute);
+
+    return true;
+}
 
 export function connect(port: number, prod: boolean): sioc.Socket {
     return sioc.connect(prod ? PROD_URL : `http://localhost:${port}`);
 }
 
 export function resetStorage() {
-    getStorage().set('sid', 'test');
+    getStorage().set('sid', null);
+    getStorage().set('password', null);
+    getStorage().set('users', []);
+
+    getStorage().set('token', null);
 }
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
     const env = process.env.NODE_ENV;
 
     const isProd = env === 'production';
 
-    logger.info(`Starting Remote Visual Studio Code in ${env} enviornment`);
+    logger.info(`starting Remote Visual Studio Code in ${env} enviornment`);
 
     storage = new LocalStorageService(context.globalState);
     resetStorage();
 
-    const socket = connect(8080, isProd);
+    socket = connect(8080, isProd);
 
     socket.on('connected', (payload: string) => {
         const { message } = JSON.parse(payload);
@@ -37,11 +59,13 @@ export function activate(context: vscode.ExtensionContext) {
         const REQUIRED_MESSAGE = 'Connected to socket server';
 
         logger.info(
-            `Connected to socket with:\n  message - ${message}\n  required message - ${REQUIRED_MESSAGE}\n  ok - ${
+            `connected to socket with:\n  message - ${message}\n  required message - ${REQUIRED_MESSAGE}\n  ok - ${
                 message === REQUIRED_MESSAGE
             } \n  id - ${socket.id}\n  payload - ${payload}`,
         );
     });
+
+    await registerCommand(new CreateSessionCommand());
 
     context.subscriptions.push(
         vscode.commands.registerCommand('remote-visual-studio-code.show', () => {
@@ -49,11 +73,19 @@ export function activate(context: vscode.ExtensionContext) {
         }),
     );
 
-    logger.info('Successfully started Remote Visual Studio Code extension');
+    logger.info('successfully started Remote Visual Studio Code extension');
 }
 
 export function getStorage(): LocalStorageService {
     return storage;
+}
+
+export function setSocket(sock: sioc.Socket): void {
+    socket = sock;
+}
+
+export function getSocket(): sioc.Socket {
+    return socket;
 }
 
 export function deactivate() {
